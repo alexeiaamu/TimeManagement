@@ -1,7 +1,4 @@
-import psycopg2
-from psycopg2.extras import RealDictCursor
-from config import config
-from datetime import datetime
+
 
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -15,7 +12,7 @@ def db_create_log(start_time: datetime, end_time: datetime, lunch_break: bool, c
         cursor = con.cursor(cursor_factory=RealDictCursor)
         
         SQL = '''
-        INSERT INTO timemanagement (start_time, end_time, lunch_break, consultant_name, customer_name)
+        INSERT INTO entries (start_time, end_time, lunch_break, consultant_name, customer_name)
         VALUES (%s, %s, %s, %s, %s);
         '''
         
@@ -25,7 +22,7 @@ def db_create_log(start_time: datetime, end_time: datetime, lunch_break: bool, c
         result = {"message": "Time logged successfully"}
         
         cursor.close()
-        return result  # Return as a dictionary (not JSON string)
+        return result  
     except (Exception, psycopg2.DatabaseError) as error:
         print(f"Error: {error}")
         return {"error": "Database error occurred"}
