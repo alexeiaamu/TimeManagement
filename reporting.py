@@ -58,9 +58,9 @@ def reporting():
     persondata = pd.DataFrame(select_hours_by_person())
     persondata = persondata.rename(columns={0:'Consultant_name', 1:'Start_time', 2:'End_time', 3:'Lunch_break'})
     persondata = persondata.assign(Work_hours=(persondata['End_time']-persondata['Start_time']-persondata['Lunch_break']*pd.to_timedelta(30, unit='min')))
-    persondata['Work_hours'] = persondata['Work_hours'].dt.total_seconds().div(3600).round(2).apply("{:g}h".format)
     persondata = persondata.assign(Date=persondata['Start_time'].dt.date)
     persondata = persondata[['Consultant_name', 'Work_hours', 'Date']].groupby(by=['Consultant_name', 'Date']).sum()
+    persondata['Work_hours'] = persondata['Work_hours'].dt.total_seconds().div(3600).round(2).apply("{:g}h".format)
     print(persondata)
     
     #print(select_hours_by_customer())
