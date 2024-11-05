@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 import psycopg2
 import pandas as pd
+from datetime import datetime
 
 def select_hours_by_person():
     con = connect()
@@ -20,7 +21,7 @@ def select_hours_by_customer():
     if con is not None:
         cursor = con.cursor()
 
-        SQL = 'SELECT customer_name, start_time, end_time FROM entries;'
+        SQL = 'SELECT customer_name, start_time, end_time, lunch_break FROM entries;'
 
         cursor.execute(SQL, )
         data = cursor.fetchall()
@@ -61,8 +62,20 @@ def reporting():
     persondata = persondata.assign(Date=persondata['Start_time'].dt.date)
     persondata = persondata[['Consultant_name', 'Work_hours', 'Date']].groupby(by=['Consultant_name', 'Date']).sum()
     persondata['Work_hours'] = persondata['Work_hours'].dt.total_seconds().div(3600).round(2).apply("{:g}h".format)
-    print(persondata)
     
-    #print(select_hours_by_customer())
+    customerdata = pd.DataFrame(select_hours_by_customer())
+    customerdata = customerdata.rename(columns={0:'Customer_name', 1:'Start_time', 2:'End_time', 3:'Lunch_break'})
+    customerdata = customerdata.assign(Work_hours=(customerdata['End_time']-customerdata['Start_time']-customerdata['Lunch_break']*pd.to_timedelta(30, unit='min')))
+    customerdata = customerdata.assign(Date=customerdata['Start_time'].dt.date)
+    customerdata = customerdata[['Customer_name', 'Work_hours', 'Date']].groupby(by=['Customer_name', 'Date']).sum()
+    customerdata['Work_hours'] = customerdata['Work_hours'].dt.total_seconds().div(3600).round(2).apply("{:g}h".format)
+
+    filename = f"timelog_{datetime.now().strftime('%Y-%m-%d')}.txt"
+    persondata.to_csv(filename, sep='\t', index=True)  # Writes to a tab-delimited file
+    print("Data has been written to {filename}")
+
+    filename = f"timelog_{datetime.now().strftime('%Y-%m-%d')}.txt"
+    customerdata.to_csv(filename, sep='\t', index=True)  # Writes to a tab-delimited file
+    print("Data has been written to {filename}")
 
 reporting()
