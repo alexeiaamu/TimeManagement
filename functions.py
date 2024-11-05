@@ -8,7 +8,7 @@ from psycopg2.extras import RealDictCursor
 from config import config
 from datetime import datetime
 
-def db_create_log(start_time: str, end_time: str, lunch_break: bool, consultant_name: str, customer_name: str):
+def db_create_log(start_time: datetime, end_time: datetime, lunch_break: bool, consultant_name: str, customer_name: str):
     con = None
     try:
         con = psycopg2.connect(**config())
