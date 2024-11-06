@@ -4,7 +4,7 @@ import uuid
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient, ContainerClient, BlobBlock, BlobClient, StandardBlobTier
 
-account_url = "https://<tonipyrytimemanagement>.blob.core.windows.net"
+account_url = "https://tonipyrytimemanagement.blob.core.windows.net"
 credential = DefaultAzureCredential()
 
 # Create the BlobServiceClient object
