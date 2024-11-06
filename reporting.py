@@ -8,7 +8,7 @@ def select_hours_by_person():
     if con is not None:
         cursor = con.cursor()
 
-        SQL = 'SELECT consultant_name, start_time, end_time, lunch_break FROM entries;'
+        SQL = 'SELECT consultant_id, start_time, end_time, lunch_break, consultant_name FROM entries;'
 
         cursor.execute(SQL, )
         data = cursor.fetchall()
@@ -21,7 +21,7 @@ def select_hours_by_customer():
     if con is not None:
         cursor = con.cursor()
 
-        SQL = 'SELECT customer_name, start_time, end_time, lunch_break FROM entries;'
+        SQL = 'SELECT customer_id, start_time, end_time, lunch_break, customer_name FROM entries;'
 
         cursor.execute(SQL, )
         data = cursor.fetchall()
@@ -57,17 +57,17 @@ def connect():
 
 def reporting():
     persondata = pd.DataFrame(select_hours_by_person())
-    persondata = persondata.rename(columns={0:'Consultant_name', 1:'Start_time', 2:'End_time', 3:'Lunch_break'})
+    persondata = persondata.rename(columns={0:'Consultant_id', 1:'Start_time', 2:'End_time', 3:'Lunch_break', 4:'Consultant_name'})
     persondata = persondata.assign(Work_hours=(persondata['End_time']-persondata['Start_time']-persondata['Lunch_break']*pd.to_timedelta(30, unit='min')))
     persondata = persondata.assign(Date=persondata['Start_time'].dt.date)
-    persondata = persondata[['Consultant_name', 'Work_hours', 'Date']].groupby(by=['Consultant_name', 'Date']).sum()
+    persondata = persondata[['Consultant_id', 'Consultant_name', 'Work_hours', 'Date']].groupby(by=['Consultant_id', 'Date']).sum()
     persondata['Work_hours'] = persondata['Work_hours'].dt.total_seconds().div(3600).round(2).apply("{:g}h".format)
     
     customerdata = pd.DataFrame(select_hours_by_customer())
-    customerdata = customerdata.rename(columns={0:'Customer_name', 1:'Start_time', 2:'End_time', 3:'Lunch_break'})
+    customerdata = customerdata.rename(columns={0:'Customer_id', 1:'Start_time', 2:'End_time', 3:'Lunch_break', 4:'Customer_name'})
     customerdata = customerdata.assign(Work_hours=(customerdata['End_time']-customerdata['Start_time']-customerdata['Lunch_break']*pd.to_timedelta(30, unit='min')))
     customerdata = customerdata.assign(Date=customerdata['Start_time'].dt.date)
-    customerdata = customerdata[['Customer_name', 'Work_hours', 'Date']].groupby(by=['Customer_name', 'Date']).sum()
+    customerdata = customerdata[['Customer_id', 'Customer_name', 'Work_hours', 'Date']].groupby(by=['Customer_id', 'Date']).sum()
     customerdata['Work_hours'] = customerdata['Work_hours'].dt.total_seconds().div(3600).round(2).apply("{:g}h".format)
 
     filename = f"timelog_{datetime.now().strftime('%Y-%m-%d')}.txt"
