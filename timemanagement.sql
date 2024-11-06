@@ -20,7 +20,7 @@ INSERT INTO entries (start_time, end_time, lunch_break, consultant_name, custome
 CREATE TABLE total_hours (
     id SERIAL PRIMARY KEY,
     consultant_id INT,
-    total_hours FLOAT
+    total_hours FLOAT,
     CONSTRAINT consultants
         FOREIGN KEY(consultant_id)
             REFERENCES entries(consultant_id)
