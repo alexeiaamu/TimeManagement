@@ -3,7 +3,7 @@ CREATE TABLE entries (
     start_time TIMESTAMP,
     end_time TIMESTAMP,
     lunch_break BOOLEAN,
-    consultant_id UNIQUE,
+    consultant_id integer NOT NULL UNIQUE,
     consultant_name VARCHAR(255),
     customer_name VARCHAR(255)
 );
