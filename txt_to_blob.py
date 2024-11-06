@@ -7,10 +7,9 @@ from azure.storage.blob import BlobServiceClient, ContainerClient, BlobBlock, Bl
 account_url = "https://tonipyrytimemanagement.blob.core.windows.net"
 credential = DefaultAzureCredential()
 
-# Create the BlobServiceClient object
-blob_service_client = BlobServiceClient(account_url, credential=credential)
-
-def upload_blob_file(blob_service_client: BlobServiceClient, container_name: str, file_path: str, blob_name: str):
+def upload_blob_file(container_name: str, file_path: str, blob_name: str):
+    # Create the BlobServiceClient object   
+    blob_service_client = BlobServiceClient(account_url, credential=credential)
     # Get the container client
     container_client = blob_service_client.get_container_client(container_name)
     try:
@@ -23,4 +22,4 @@ def upload_blob_file(blob_service_client: BlobServiceClient, container_name: str
     except Exception as e:
         print(f"Error uploading file: {e}")
 
-upload_blob_file(blob_service_client, "reports", "timelog_2024-11-05_15-18-04.txt", "timelog_2024-11-05_15-18-04")
+upload_blob_file("reports", "timelog_2024-11-05_15-18-04.txt", "timelog_2024-11-05_15-18-04")
