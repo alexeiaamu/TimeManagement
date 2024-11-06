@@ -24,4 +24,4 @@ CREATE TABLE total_hours (
     CONSTRAINT consultants
         FOREIGN KEY(consultant_id)
             REFERENCES entries(consultant_id)
-)
+);
