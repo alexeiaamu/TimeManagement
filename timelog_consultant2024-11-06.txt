@@ -1,0 +1,5 @@
+Consultant_id	Date	Consultant_name	Work_hours
+1	2024-11-05	Konsultti1	7.5h
+2	2024-11-05	Konsultti2	6.92h
+3	2024-11-05	Konsultti3	8.5h
+9	2024-11-08	Testi9	2h
