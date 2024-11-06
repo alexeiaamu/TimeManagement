@@ -85,3 +85,6 @@ def connect():
             con.close()
     
     return con
+
+if __name__ == "__main__":
+    app.run(debug=True)
