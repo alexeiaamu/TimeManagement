@@ -3,6 +3,7 @@ CREATE TABLE entries (
     start_time TIMESTAMP,
     end_time TIMESTAMP,
     lunch_break BOOLEAN,
+    consultant_id UNIQUE,
     consultant_name VARCHAR(255),
     customer_name VARCHAR(255)
 );
@@ -15,3 +16,12 @@ INSERT INTO entries (start_time, end_time, lunch_break, consultant_name, custome
 
 INSERT INTO entries (start_time, end_time, lunch_break, consultant_name, customer_name)
             VALUES ('2024-11-5 07:10:00', '2024-11-5 16:10:00', TRUE, 'Konsultti3', 'Asiakas1');
+
+CREATE TABLE total_hours (
+    id SERIAL PRIMARY KEY,
+    consultant_id INT,
+    total_hours FLOAT
+    CONSTRAINT consultants
+        FOREIGN KEY(consultant_id)
+            REFERENCES entries(consultant_id)
+)
