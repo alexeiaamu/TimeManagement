@@ -5,6 +5,7 @@ CREATE TABLE entries (
     lunch_break BOOLEAN,
     consultant_id integer NOT NULL UNIQUE,
     consultant_name VARCHAR(255),
+    customer_id integer NOT NULL UNIQUE,
     customer_name VARCHAR(255)
 );
 
