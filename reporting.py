@@ -2,6 +2,7 @@ from configparser import ConfigParser
 import psycopg2
 import pandas as pd
 from datetime import datetime
+from txt_to_blob import upload_blob_file
 
 def select_hours_by_person():
     con = connect()
@@ -73,9 +74,10 @@ def reporting():
     filename = f"timelog_{datetime.now().strftime('%Y-%m-%d')}.txt"
     persondata.to_csv(filename, sep='\t', index=True)  # Writes to a tab-delimited file
     print("Data has been written to {filename}")
+    upload_blob_file("reports", filename, filename.split()[0])
 
     filename = f"timelog_{datetime.now().strftime('%Y-%m-%d')}.txt"
     customerdata.to_csv(filename, sep='\t', index=True)  # Writes to a tab-delimited file
-    print("Data has been written to {filename}")
+    upload_blob_file("reports", filename, filename.split()[0])
 
 reporting()
