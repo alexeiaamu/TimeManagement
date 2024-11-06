@@ -1,0 +1,4 @@
+Customer_id	Date	Customer_name	Work_hours
+1	2024-11-05	Asiakas1Asiakas1	16h
+2	2024-11-05	Asiakas2	6.92h
+9	2024-11-08	Asiakas9	2h

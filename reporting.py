@@ -71,12 +71,12 @@ def reporting():
     customerdata = customerdata[['Customer_id', 'Customer_name', 'Work_hours', 'Date']].groupby(by=['Customer_id', 'Date']).sum()
     customerdata['Work_hours'] = customerdata['Work_hours'].dt.total_seconds().div(3600).round(2).apply("{:g}h".format)
 
-    filename = f"timelog_{datetime.now().strftime('%Y-%m-%d')}.txt"
+    filename = f"timelog_consultant{datetime.now().strftime('%Y-%m-%d')}.txt"
     persondata.to_csv(filename, sep='\t', index=True)  # Writes to a tab-delimited file
     print("Data has been written to {filename}")
     upload_blob_file("reports", filename, filename.split()[0])
 
-    filename = f"timelog_{datetime.now().strftime('%Y-%m-%d')}.txt"
+    filename = f"timelog_customer{datetime.now().strftime('%Y-%m-%d')}.txt"
     customerdata.to_csv(filename, sep='\t', index=True)  # Writes to a tab-delimited file
     upload_blob_file("reports", filename, filename.split()[0])
 
