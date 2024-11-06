@@ -21,5 +21,3 @@ def upload_blob_file(container_name: str, file_path: str, blob_name: str):
     
     except Exception as e:
         print(f"Error uploading file: {e}")
-
-upload_blob_file("reports", "timelog_2024-11-05_15-18-04.txt", "timelog_2024-11-05_15-18-04")
