@@ -6,6 +6,7 @@ from datetime import datetime
 
 def avg_hours():
     con=None
+    result=[]
     try:
         con = psycopg2.connect(**config())
         cursor = con.cursor(cursor_factory=RealDictCursor)
@@ -26,19 +27,19 @@ def avg_hours():
             consultant_id, consultant_name, DATE(start_time);
         """
 
-        # Execute the query
         cursor.execute(query)
         
-
-        # Fetch the results
         results = cursor.fetchall()
 
-        # Print results or return them
         for row in results:
             consultant_id = row['consultant_id']
             consultant_name = row['consultant_name']
             avg_hours_per_day = row['avg_hours_per_day']
-            print(f"Consultant {consultant_name} (ID: {consultant_id}) averaged {avg_hours_per_day} hours per day.")
+            result.append({
+                'consultant_id': consultant_id,
+                'consultant_name': consultant_name,
+                'avg_hours_per_day': avg_hours_per_day or 0.0
+            })
 
         cursor.close()
     
@@ -49,5 +50,4 @@ def avg_hours():
     finally:
         if con is not None:
             con.close()
-
-avg_hours()
+    return result
