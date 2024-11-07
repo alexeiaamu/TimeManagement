@@ -11,6 +11,7 @@ app = Flask(__name__)
 def reporting():
     persondata = pd.DataFrame(select_hours_by_person())
     persondata = persondata.rename(columns={0:'Consultant_id', 1:'Start_time', 2:'End_time', 3:'Lunch_break', 4:'Consultant_name'})
+    print(persondata)
     persondata = persondata.assign(Work_hours=(persondata['End_time']-persondata['Start_time']-persondata['Lunch_break']*pd.to_timedelta(30, unit='min')))
     persondata = persondata.assign(Date=persondata['Start_time'].dt.date)
     persondata = persondata[['Consultant_id', 'Consultant_name', 'Work_hours', 'Date']].groupby(by=['Consultant_id', 'Date']).sum()
@@ -43,6 +44,7 @@ def select_hours_by_person():
 
         cursor.execute(SQL, )
         data = cursor.fetchall()
+        print(data)
         cursor.close()
         con.close()
         return data
