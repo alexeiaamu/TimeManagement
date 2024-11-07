@@ -4,6 +4,7 @@ import pandas as pd
 from datetime import datetime
 from txt_to_blob import upload_blob_file
 from flask import Flask, request, jsonify
+from avg_hours import avg_hours
 
 app = Flask(__name__)
 
@@ -11,7 +12,6 @@ app = Flask(__name__)
 def reporting():
     persondata = pd.DataFrame(select_hours_by_person())
     persondata = persondata.rename(columns={0:'Consultant_id', 1:'Start_time', 2:'End_time', 3:'Lunch_break', 4:'Consultant_name'})
-    print(persondata)
     persondata = persondata.assign(Work_hours=(persondata['End_time']-persondata['Start_time']-persondata['Lunch_break']*pd.to_timedelta(30, unit='min')))
     persondata = persondata.assign(Date=persondata['Start_time'].dt.date)
     persondata = persondata[['Consultant_id', 'Consultant_name', 'Work_hours', 'Date']].groupby(by=['Consultant_id', 'Date']).sum()
@@ -24,8 +24,20 @@ def reporting():
     customerdata = customerdata[['Customer_id', 'Customer_name', 'Work_hours', 'Date']].groupby(by=['Customer_id', 'Date']).sum()
     customerdata['Work_hours'] = customerdata['Work_hours'].dt.total_seconds().div(3600).round(2).apply("{:g}h".format)
 
+    avg_hours_data = avg_hours()
+    avg_hours_df = pd.DataFrame(avg_hours_data)
+    avg_hours_df = avg_hours_df[['consultant_name', 'avg_hours_per_day']]
+
+    avg_hours_df = avg_hours_df.groupby('consultant_name').agg({'avg_hours_per_day': 'mean'}).reset_index()
+    
+
     filename = f"timelog_consultant_{datetime.now().strftime('%Y-%m-%d')}.txt"
     persondata.to_csv("reports\\"+filename, sep='\t', index=True)  # Writes to a tab-delimited file
+    print(f"Data has been written to {filename}")
+    upload_blob_file("reports", "reports\\"+filename, filename.split('.')[0])
+
+    filename = f"daily_averages_{datetime.now().strftime('%Y-%m-%d')}.txt"
+    avg_hours_df.to_csv("reports\\"+filename, sep='\t', index=True)  # Writes to a tab-delimited file
     print(f"Data has been written to {filename}")
     upload_blob_file("reports", "reports\\"+filename, filename.split('.')[0])
 
@@ -44,7 +56,6 @@ def select_hours_by_person():
 
         cursor.execute(SQL, )
         data = cursor.fetchall()
-        print(data)
         cursor.close()
         con.close()
         return data
